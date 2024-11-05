@@ -1,8 +1,10 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Key
+from .models import Key, KeyAssignment
 from .serializers import KeySerializer
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
 class KeyViewSet(viewsets.ModelViewSet):
     queryset = Key.objects.all()
@@ -38,3 +40,17 @@ class KeyViewSet(viewsets.ModelViewSet):
             for key in keys
         }
         return Response(data)
+
+def checkout_key(request, key_id):
+    key = get_object_or_404(Key, pk=key_id)
+
+    if request.method == 'POST':
+        assignment = KeyAssignment(user=request.user, key=key)
+        assignment.sae()
+        return redirect('key_checkout_success')
+    
+    return render (request, 'checkout_key.html', {'key': key})
+
+def my_assignments(request):
+    assignments = KeyAssignment.objects.filter(user=request.user)
+    return render(request, 'my_assignments.html', {'assignments': assignments})

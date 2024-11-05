@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Key Assignments</title>
+</head>
+<body>
+    <h1>My Key Assignments</h1>
+    <ul>
+        {% for assignment in assignments %}
+            <li>{{ assignment.key.key_name }} (Checked out on: {{ assignment.checkout_date }})</li>
+        {% empty %}
+            <li>No assignments found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
