@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Key, KeyAssignment
+from .models import Key, KeyAssignment, Users
 from .serializers import KeySerializer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -54,3 +54,14 @@ def checkout_key(request, key_id):
 def my_assignments(request):
     assignments = KeyAssignment.objects.filter(user=request.user)
     return render(request, 'my_assignments.html', {'assignments': assignments})
+
+def key_inventory_status(request):
+    keys = Key.objects.all()
+    # Get all key assignments to display which users have which keys checked out or lost
+    key_assignments = KeyAssignment.objects.select_related('user', 'key').all()
+    
+    return render(request, 'inventory/key_inventory_status.html', {
+        'keys': keys,
+        'key_assignments': key_assignments,
+    })
+

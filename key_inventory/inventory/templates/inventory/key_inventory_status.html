@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Key Inventory Status</title>
+</head>
+<body>
+    <h1>Key Inventory Status</h1>
+    
+    <h2>Keys Overview</h2>
+    <table border="1">
+        <tr>
+            <th>Key Name</th>
+            <th>Total Quantity</th>
+            <th>Checked Out</th>
+            <th>Available</th>
+            <th>Lost</th>
+        </tr>
+        {% for key in keys %}
+        <tr>
+            <td>{{ key.name }}</td>
+            <td>{{ key.total_quantity }}</td>
+            <td>{{ key.checked_out_quantity }}</td>
+            <td>{{ key.available_quantity }}</td>
+            <td>{{ key.lost_quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>User Assignments</h2>
+    <table border="1">
+        <tr>
+            <th>User Name</th>
+            <th>Checked Out Keys</th>
+            <th>Lost Keys</th>
+        </tr>
+        {% for assignment in key_assignments %}
+        <tr>
+            <td>{{ assignment.user.fname }} {{ assignment.user.lname }}</td>
+            <td>
+                {% if assignment.status == 'CHECKED_OUT' %}
+                    {{ assignment.key.name }}
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            <td>
+                {% if assignment.status == 'LOST' %}
+                    {{ assignment.key.name }}
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
