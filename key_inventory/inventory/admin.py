@@ -3,11 +3,14 @@ from django.utils import timezone
 from .models import Key, Users, KeyAssignment
 
 # Register Users
-admin.site.register(Users)
+
+@admin.register(Users)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('fname', 'lname', 'email')
 
 @admin.register(Key)
 class KeyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_quantity', 'checked_out_quantity', 'available_quantity')
+    list_display = ('name', 'total_quantity', 'checked_out_quantity', 'available_quantity', 'display_notes')
 
 # Action to mark selected keys as lost
 @admin.action(description="Mark selected keys as lost")

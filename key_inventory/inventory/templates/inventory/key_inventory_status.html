@@ -8,9 +8,10 @@
     <h1>Key Inventory Status</h1>
     
     <h2>Keys Overview</h2>
-    <table border="1">
+    <table border="0">
         <tr>
             <th>Key Name</th>
+            <th>Notes</th>
             <th>Total Quantity</th>
             <th>Checked Out</th>
             <th>Available</th>
@@ -19,6 +20,7 @@
         {% for key in keys %}
         <tr>
             <td>{{ key.name }}</td>
+            <td>{{ key.notes }}</td>
             <td>{{ key.total_quantity }}</td>
             <td>{{ key.checked_out_quantity }}</td>
             <td>{{ key.available_quantity }}</td>
@@ -28,11 +30,12 @@
     </table>
 
     <h2>User Assignments</h2>
-    <table border="1">
+    <table border="0">
         <tr>
             <th>User Name</th>
             <th>Checked Out Keys</th>
             <th>Lost Keys</th>
+            <th>Status</th>
         </tr>
         {% for assignment in key_assignments %}
         <tr>
@@ -51,8 +54,12 @@
                     None
                 {% endif %}
             </td>
+
+                <td>{{ assignment.status }}</td>
+
         </tr>
         {% endfor %}
     </table>
+
 </body>
 </html>

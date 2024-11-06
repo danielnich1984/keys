@@ -1,8 +1,8 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Key, KeyAssignment, Users
-from .serializers import KeySerializer
+from .serializers import KeySerializer, UserSerializer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -34,8 +34,9 @@ class KeyViewSet(viewsets.ModelViewSet):
         data = {
             key.name: {
                 'total_quantity': key.total_quantity,
-                'checked_out_quantity': key.checked_out_quantity,
+                'checked_out_quantity': key.checked_out_quantity(),
                 'available_quantity': key.available_quantity(),
+                'lost_quantity': key.lost_quantity(),
             }
             for key in keys
         }
@@ -64,4 +65,8 @@ def key_inventory_status(request):
         'keys': keys,
         'key_assignments': key_assignments,
     })
+
+class UserListView(generics.ListAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UserSerializer
 

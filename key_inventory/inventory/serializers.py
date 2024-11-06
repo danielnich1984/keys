@@ -6,7 +6,7 @@ class KeySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Key
-        fields = ['id', 'name', 'total_quantity', 'checked_out_quantity', 'available_quantity']
+        fields = ['id', 'name', 'total_quantity', 'checked_out_quantity', 'available_quantity', 'display_notes']
         read_only_fields = ['available_quantity']
 
 
