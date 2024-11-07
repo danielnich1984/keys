@@ -1,16 +1,15 @@
-# inventory/urls.py
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import KeyViewSet, checkout_key, UserListView
+from .views import KeyViewSet, UserListView, KeyAssignmentView, key_inventory_status, UserCreateView
 from . import views
 
 router = DefaultRouter()
-router.register(r'keys', KeyViewSet)  # Register the Key viewset
+router.register(r'keys', KeyViewSet)
+router.register(r'keyassignments', KeyAssignmentView, basename='key_assignment')
 
 urlpatterns = [
-    path('', include(router.urls)),  # Include the router URLs
-    path('checkout_key/<int:key_id>/', checkout_key,name='checkout_key'),
+    path('users/', UserListView.as_view(), name='user_list'),  # User API endpoint
+    path('users/create/', UserCreateView.as_view(), name='user-create'),
     path('key-inventory/', views.key_inventory_status, name='key_inventory_status'),
-    path('users/', UserListView.as_view(), name='user-list'),
+    path('', include(router.urls)),  # Register the KeyViewSet API routes
 ]

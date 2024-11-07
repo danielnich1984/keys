@@ -1,35 +1,24 @@
-from rest_framework import viewsets, status, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import viewsets, generics
 from rest_framework.decorators import action
-from .models import Key, KeyAssignment, Users
-from .serializers import KeySerializer, UserSerializer
-from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseNotAllowed
+from .models import Key, KeyAssignment, Users
+from .serializers import KeySerializer, UserSerializer, KeyAssignmentSerializer
 
+# API View for Key Checkout
+
+# ViewSet for Key - Handle CRUD operations for keys
 class KeyViewSet(viewsets.ModelViewSet):
     queryset = Key.objects.all()
     serializer_class = KeySerializer
-
-    @action(detail=True, methods=['post'])
-    def checkout(self, request, pk=None):
-        key = self.get_object()
-        if key.available_quantity() <= 0:
-            return Response({'error': 'No available keys for checkout.'}, status=status.HTTP_400_BAD_REQUEST)
-        key.checked_out_quantity += 1
-        key.save()
-        return Response(self.get_serializer(key).data)
-
-    @action(detail=True, methods=['post'])
-    def checkin(self, request, pk=None):
-        key = self.get_object()
-        if key.checked_out_quantity <= 0:
-            return Response({'error': 'No keys to check in.'}, status=status.HTTP_400_BAD_REQUEST)
-        key.checked_out_quantity -= 1
-        key.save()
-        return Response(self.get_serializer(key).data)
-
+    
     @action(detail=False, methods=['get'])
     def report(self, request):
+        # Get a report of key status
         keys = Key.objects.all()
         data = {
             key.name: {
@@ -41,21 +30,8 @@ class KeyViewSet(viewsets.ModelViewSet):
             for key in keys
         }
         return Response(data)
-
-def checkout_key(request, key_id):
-    key = get_object_or_404(Key, pk=key_id)
-
-    if request.method == 'POST':
-        assignment = KeyAssignment(user=request.user, key=key)
-        assignment.sae()
-        return redirect('key_checkout_success')
     
-    return render (request, 'checkout_key.html', {'key': key})
-
-def my_assignments(request):
-    assignments = KeyAssignment.objects.filter(user=request.user)
-    return render(request, 'my_assignments.html', {'assignments': assignments})
-
+  
 def key_inventory_status(request):
     keys = Key.objects.all()
     # Get all key assignments to display which users have which keys checked out or lost
@@ -66,7 +42,25 @@ def key_inventory_status(request):
         'key_assignments': key_assignments,
     })
 
+# User List API View for fetching users (if needed for your API)
 class UserListView(generics.ListAPIView):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
+    
+class UserCreateView(generics.CreateAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UserSerializer
+
+class KeyAssignmentView(viewsets.ModelViewSet):
+    queryset = KeyAssignment.objects.all()
+    serializer_class = KeyAssignmentSerializer
+
+    @action(detail=False, methods=['get'])
+    def assign(self, request):
+        # Custom action to render drop-down options for assignment
+        keys = Key.objects.all()  # Get all available keys
+        # This could be a context or form rendering if you’re using DRF’s Browsable API
+        return Response({
+            'keys': [key.name for key in keys]
+        })
 

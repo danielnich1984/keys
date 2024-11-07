@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Key)
 class KeyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_quantity', 'checked_out_quantity', 'available_quantity', 'display_notes')
+    list_display = ('name', 'total_quantity', 'checked_out_quantity', 'available_quantity', 'notes')
 
 # Action to mark selected keys as lost
 @admin.action(description="Mark selected keys as lost")

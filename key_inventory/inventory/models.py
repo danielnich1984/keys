@@ -17,9 +17,6 @@ class Key(models.Model):
     def lost_quantity(self):
         # Reference the constant here
         return KeyAssignment.objects.filter(key=self, status=KeyAssignment.LOST).count()
-    
-    def display_notes(self):
-        return f"{self.notes}"
 
     def __str__(self):
         return f"{self.name} - Available: {self.available_quantity()} / Total: {self.total_quantity}"
