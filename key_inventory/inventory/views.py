@@ -9,6 +9,9 @@ from django.http import HttpResponseNotAllowed
 from .models import Key, KeyAssignment, Users
 from .serializers import KeySerializer, UserSerializer, KeyAssignmentSerializer
 
+def index(request):
+    return render(request, 'index.html')
+
 # API View for Key Checkout
 
 # ViewSet for Key - Handle CRUD operations for keys
@@ -35,7 +38,7 @@ class KeyViewSet(viewsets.ModelViewSet):
 def key_inventory_status(request):
     keys = Key.objects.all()
     # Get all key assignments to display which users have which keys checked out or lost
-    key_assignments = KeyAssignment.objects.select_related('user', 'key').all()
+    key_assignments = KeyAssignment.objects.select_related('user', 'key').all().order_by('user')
     
     return render(request, 'inventory/key_inventory_status.html', {
         'keys': keys,
@@ -46,6 +49,7 @@ def key_inventory_status(request):
 class UserListView(generics.ListAPIView):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
+    
     
 class UserCreateView(generics.CreateAPIView):
     queryset = Users.objects.all()

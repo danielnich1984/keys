@@ -38,26 +38,28 @@
             <th>Status</th>
         </tr>
         {% for assignment in key_assignments %}
-        <tr>
-            <td>{{ assignment.user.fname }} {{ assignment.user.lname }}</td>
-            <td>
-                {% if assignment.status == 'CHECKED_OUT' %}
-                    {{ assignment.key.name }}
-                {% else %}
-                    None
-                {% endif %}
-            </td>
-            <td>
-                {% if assignment.status == 'LOST' %}
-                    {{ assignment.key.name }}
-                {% else %}
-                    None
-                {% endif %}
-            </td>
+            {% if assignment.status != 'CHECKED_IN' %}
+                <tr>
+                    <td>{{ assignment.user.fname }} {{ assignment.user.lname }}</td>
+                    <td>
+                        {% if assignment.status == 'CHECKED_OUT' %}
+                            {{ assignment.key.name }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if assignment.status == 'LOST' %}
+                            {{ assignment.key.name }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
 
-                <td>{{ assignment.status }}</td>
+                        <td>{{ assignment.status }}</td>
 
-        </tr>
+                </tr>
+            {% endif %}
         {% endfor %}
     </table>
 
