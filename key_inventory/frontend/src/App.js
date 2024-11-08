@@ -1,10 +1,10 @@
 import React from 'react';
-import UserList from './components/UserList'
+import AppRoutes from './Routes';
 
-function App() {
+export const App = () => {
   return (
     <div className="App">
-        <UserList />
+        <AppRoutes />
     </div>
   );
 }
