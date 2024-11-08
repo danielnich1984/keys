@@ -11,5 +11,6 @@ urlpatterns = [
     path('users/', UserListView.as_view(), name='user_list'),  # User API endpoint
     path('users/create/', UserCreateView.as_view(), name='user-create'),
     path('key-inventory/', views.key_inventory_status, name='key_inventory_status'),
+    path('assign-key', views.assign_key, name='assign-key'),
     path('', include(router.urls)),  # Register the KeyViewSet API routes
 ]

@@ -1,8 +1,9 @@
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets, generics
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotAllowed
@@ -67,4 +68,33 @@ class KeyAssignmentView(viewsets.ModelViewSet):
         return Response({
             'keys': [key.name for key in keys]
         })
+    
 
+@api_view(['POST'])
+def assign_key(request):
+    try:
+        user_id = request.data.get('user_id')
+        key_id = request.data.get('key_id')
+
+        if not user_id or not key_id:
+            return Response({'error': 'User ID and Key ID are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the user and key objects
+        try:
+            user = Users.objects.get(id=user_id)
+        except Users.DoesNotExist:
+            return Response({'error': 'User not found!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            key = Key.objects.get(id=key_id)
+        except Key.DoesNotExist:
+
+            return Response({'error': 'Key not found!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the key assignment
+        KeyAssignment.objects.create(user=user, key=key)
+
+        return Response({'message': 'Key assigned successfully!'}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
